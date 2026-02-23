@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/AVRCoPilot.unity
+    guid: 4086e5aba5bbec343994249d11e60474
+  - enabled: 0
+    path: Assets/Scenes/AVRPilot.unity
+    guid: c5acebd698113c64ab98d7fbc7013924
+  - enabled: 0
+    path: Assets/Scenes/TestStreamReceiver.unity
+    guid: 77f1082c719e0ea4394312fbd982ace2
+  - enabled: 0
+    path: Assets/Scenes/TestOverlayer.unity
+    guid: fba41194c0f199b4b8521396cec40695
+  - enabled: 0
+    path: Assets/Scenes/TestStreamSender.unity
+    guid: 9039ce90b1952314f9905cbb7290e786
+  - enabled: 1
+    path: Assets/Scenes/Projective Texture Testing.unity
+    guid: 5f061c354449a5c4b802ff7f6a55fafb
+  m_configObjects:
+    Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: c68c17eac1c716546bac0d14f4f15af4, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 92e18ed2b1ac5d74686a76c9942fe914, type: 2}
+    com.unity.renderstreaming.settings: {fileID: 11400000, guid: 039337c008e9a5c44a60f957eae3e450, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 2d37c48373c36da4fba33bf34c088baf, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 6381f77165b9ade4091442a461922d84, type: 2}

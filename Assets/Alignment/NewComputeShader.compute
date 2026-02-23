@@ -1,0 +1,70 @@
+// ComputeShader.compute
+/*
+#pragma kernel CSMain
+
+RWTexture2D<float4> Source;    // Input texture (read-only)
+RWTexture2D<float4> Result;  // Output texture (read-write)
+// Data to embed
+float3 _Position;
+float4 _Rotation;
+
+// Encode a float3 position into RGB channels
+float4 EncodePosition(float3 pos) {
+    // Scale position to 0-1 range (adjust divisor as needed)
+    return float4(pos / 100.0, 1.0);
+}
+
+// Encode a quaternion into RGBA channels (normalize from [-1,1] to [0,1])
+float4 EncodeRotation(float4 rot) {
+    return (rot + 1.0) * 0.5;
+}
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    // Copy source pixel to destination
+    float4 pixel = _SourceTex[id.xy];
+    _ResultTex[id.xy] = pixel;
+
+    // Overwrite top-left 2x2 pixels with data
+    if (id.x < 2 && id.y < 2) {
+        // Pixel (0,0): Position (RGB)
+        if (id.x == 0 && id.y == 0) {
+            _ResultTex[id.xy] = EncodePosition(_Position);
+        }
+        // Pixel (1,0): Rotation (RGBA)
+        else if (id.x == 1 && id.y == 0) {
+            _ResultTex[id.xy] = EncodeRotation(_Rotation);
+        }
+    }
+}*/
+// PoseWrite.compute
+#pragma kernel CSMain
+
+// The output texture (will be mirrorTexture) with TextureFormat.RGBA32.
+RWTexture2D<float4> Result;
+
+// A structured buffer of 7 floats: [pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, rot.w].
+StructuredBuffer<float> PoseBuffer;
+
+[numthreads(1, 1, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x; // index from 0 to 6
+    // Retrieve the float value from the buffer.
+    float v = PoseBuffer[index];
+
+    // Convert the float into its 32-bit unsigned integer bit pattern.
+    uint iv = asuint(v);
+
+    // Pack the uint into normalized RGBA components (each channel represents 8 bits).
+    float4 packed;
+    packed.r = (iv & 0xffu) / 255.0;
+    packed.g = ((iv >> 8) & 0xffu) / 255.0;
+    packed.b = ((iv >> 16) & 0xffu) / 255.0;
+    packed.a = ((iv >> 24) & 0xffu) / 255.0;
+
+    // Write the packed value to pixel coordinate (index, 0).
+    uint2 targetPixel = uint2(index, 0);
+    Result[targetPixel] = packed;
+}

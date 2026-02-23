@@ -1,0 +1,70 @@
+#pragma kernel ModifyColors
+
+RWTexture2D<float4> Result;
+StructuredBuffer<uint> PackedNibbles;
+int startX;
+int startY;
+int texWidth;
+int texHeight;
+
+// Helper to safely get a nibble from the packed buffer
+uint GetNibble(uint globalIndex)
+{
+    // We only have 50 nibbles of data
+    if (globalIndex >= 50)
+    {
+        return 0;
+    }
+
+    uint packedIndex = globalIndex / 4; // Which uint to read
+    uint nibblePosInUint = globalIndex % 4; // Which nibble inside the uint (0-3)
+
+    uint packedValue = PackedNibbles[packedIndex];
+
+    // Shift to get the correct 8-bit chunk, then get the 4-bit nibble
+    uint byteShift = (3 - nibblePosInUint) * 8;
+    uint byteValue = (packedValue >> byteShift) & 0xFF;
+    return byteValue & 0x0F;
+}
+
+
+[numthreads(5, 5, 1)] // Use a 5x5 block
+void ModifyColors(uint3 id : SV_GroupThreadID)
+{
+    int2 pixelCoord = int2(startX, startY) + int2(id.x, id.y);
+
+    if (pixelCoord.x >= texWidth || pixelCoord.y >= texHeight)
+    {
+        return;
+    }
+
+    // Each pixel has an index from 0 to 24
+    uint pixelIndex = id.y * 5 + id.x;
+    // Each pixel corresponds to 3 nibbles in the data stream
+    uint globalNibbleBaseIndex = pixelIndex * 3;
+
+    // If this pixel is beyond our data payload, write a fixed pattern and exit.
+    // 50 nibbles are stored in the first 17 pixels (17*3 = 51).
+    if (globalNibbleBaseIndex >= 50)
+    {
+        Result[pixelCoord] = float4(0.0f, 0.0f, 0.0f, 1.0f); // Set unused pixels to black
+        return;
+    }
+
+    // Get the 3 nibbles for this pixel's R, G, B channels
+    uint rNibble = GetNibble(globalNibbleBaseIndex);
+    uint gNibble = GetNibble(globalNibbleBaseIndex + 1);
+    uint bNibble = GetNibble(globalNibbleBaseIndex + 2);
+
+    // Encode data into high 4 bits, set low 4 bits to 1111 (0xF)
+    uint rByte = (rNibble << 4) | 0x0F;
+    uint gByte = (gNibble << 4) | 0x0F;
+    uint bByte = (bNibble << 4) | 0x0F;
+
+    Result[pixelCoord] = float4(
+        rByte / 255.0,
+        gByte / 255.0,
+        bByte / 255.0,
+        1.0
+    );
+}
