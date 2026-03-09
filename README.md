@@ -1,12 +1,12 @@
 # AccompliceVR
-![AVR Pilot side teaser](Documents/Pilot Teasers.png)
-![AVR CoPilot side teaser](Documents/Copilot Teasers.png)
+![AVR Pilot side teaser](Documents/Pilot_Teasers.png)
+![AVR CoPilot side teaser](Documents/Copilot_Teasers.png)
 
 **AccompliceVR** is a remote streaming and collaboration system built on the **Ubiq framework**. It allows for synchronized interaction and viewport sharing between a Pilot and a Copilot in a Virtual Reality environment. For more information, see Ubiq's [documentation](https://ucl-vr.github.io/ubiq/) and [website](https://ubiq.online). AccompliceVR currently uses Ubiq [v1.0.0-pre.16](https://github.com/UCL-VR/ubiq/releases/tag/unity-v1.0.0-pre.16).
 
 The system architecture is shown here:
 
-![AVR system architecture](Documents/AVR system diagram final.png)
+![AVR system architecture](Documents/AVR_system_diagram_final.png)
 
 
 ### 🛠 System Requirements
