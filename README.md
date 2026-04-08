@@ -99,4 +99,6 @@ The Copilot can interact with the environment and guide the Pilot using the foll
 
 For detailed information regarding the system architecture and experimental results, please refer to our paper:
 
-> **[Insert Full Paper Title and Authors Here]**
+DOI: 10.1109/TVCG.2026.3679102
+
+> **[https://ieeexplore.ieee.org/document/11458025]**
