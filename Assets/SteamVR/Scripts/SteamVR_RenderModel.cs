@@ -9,6 +9,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Valve.VR;
+#if UNITY_6000_6_OR_NEWER
+using RenderModelObjectId = UnityEngine.EntityId;
+#else
+using RenderModelObjectId = System.Int32;
+#endif
 
 namespace Valve.VR
 {
@@ -739,7 +744,16 @@ namespace Valve.VR
                 UpdateComponents(OpenVR.RenderModels);
         }
 
-        Dictionary<int, string> nameCache;
+        Dictionary<RenderModelObjectId, string> nameCache;
+
+        private static RenderModelObjectId GetObjectId(UnityEngine.Object instance)
+        {
+#if UNITY_6000_6_OR_NEWER
+            return instance.GetEntityId();
+#else
+            return instance.GetInstanceID();
+#endif
+        }
 
         public void UpdateComponents(CVRRenderModels renderModels)
         {
@@ -750,7 +764,7 @@ namespace Valve.VR
                 return;
 
             if (nameCache == null)
-                nameCache = new Dictionary<int, string>();
+                nameCache = new Dictionary<RenderModelObjectId, string>();
 
             for (int childIndex = 0; childIndex < transform.childCount; childIndex++)
             {
@@ -758,10 +772,10 @@ namespace Valve.VR
 
                 // Cache names since accessing an object's name allocates memory.
                 string componentName;
-                if (!nameCache.TryGetValue(child.GetInstanceID(), out componentName))
+                if (!nameCache.TryGetValue(GetObjectId(child), out componentName))
                 {
                     componentName = child.name;
-                    nameCache.Add(child.GetInstanceID(), componentName);
+                    nameCache.Add(GetObjectId(child), componentName);
                 }
 
                 var componentState = new RenderModel_ComponentState_t();
@@ -775,7 +789,7 @@ namespace Valve.VR
                 for (int childChildIndex = 0; childChildIndex < child.childCount; childChildIndex++)
                 {
                     Transform childChild = child.GetChild(childChildIndex);
-                    int childInstanceID = childChild.GetInstanceID();
+                    RenderModelObjectId childInstanceID = GetObjectId(childChild);
                     string childName;
                     if (!nameCache.TryGetValue(childInstanceID, out childName))
                     {

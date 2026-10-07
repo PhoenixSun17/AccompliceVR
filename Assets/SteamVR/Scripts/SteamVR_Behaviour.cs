@@ -102,6 +102,11 @@ namespace Valve.VR
 
         public void InitializeSteamVR(bool forceUnityVRToOpenVR = false)
         {
+#if UNITY_6000_0_OR_NEWER
+            // XR Plug-in Management starts the configured loader; legacy device switching is unsupported.
+            forcingInitialization = false;
+            SteamVR.Initialize(false);
+#else
             if (forceUnityVRToOpenVR)
             {
                 forcingInitialization = true;
@@ -118,8 +123,10 @@ namespace Valve.VR
             {
                 SteamVR.Initialize(false);
             }
+#endif
         }
 
+#if !UNITY_6000_0_OR_NEWER
         private Coroutine initializeCoroutine;
 
 #if UNITY_2018_3_OR_NEWER
@@ -164,6 +171,7 @@ namespace Valve.VR
             initializeCoroutine = null;
             forcingInitialization = false;
         }
+#endif
 
 #if UNITY_EDITOR
         //only stop playing if the unity editor is running

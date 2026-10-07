@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_6000_0_OR_NEWER
+using PhysicMaterial = UnityEngine.PhysicsMaterial;
+using PhysicMaterialCombine = UnityEngine.PhysicsMaterialCombine;
+#endif
 
 namespace Valve.VR.InteractionSystem
 {

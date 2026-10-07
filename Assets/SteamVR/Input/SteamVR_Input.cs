@@ -121,7 +121,11 @@ namespace Valve.VR
 
         private static void FindPreinitializeMethod()
         {
+#if UNITY_6000_6_OR_NEWER
+            Assembly[] assemblies = UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies().ToArray();
+#else
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+#endif
             for (int assemblyIndex = 0; assemblyIndex < assemblies.Length; assemblyIndex++)
             {
                 Assembly assembly = assemblies[assemblyIndex];

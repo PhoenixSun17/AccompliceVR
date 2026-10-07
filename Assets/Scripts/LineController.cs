@@ -49,12 +49,12 @@ public class LineController : MonoBehaviour
     {
         if (Line.activeSelf)
         {
-            Line.active = false;
+            Line.SetActive(false);
             SendMessage(false);
         }
         else
         {
-            Line.active = true;
+            Line.SetActive(true);
             SendMessage(true);
         }
     }
@@ -65,7 +65,7 @@ public class LineController : MonoBehaviour
         var m = message.FromJson<Message>();
 
         // Use the message to update the Component
-        Line.active = m.isLineRenderred;
+        Line.SetActive(m.isLineRenderred);
 
 
     }

@@ -237,7 +237,11 @@ public static class SteamVR_Utils
 	{
 		var type = System.Type.GetType(typeName);
 		if (type != null) return type;
+#if UNITY_6000_6_OR_NEWER
+		foreach (var a in UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies())
+#else
 		foreach (var a in System.AppDomain.CurrentDomain.GetAssemblies())
+#endif
 		{
 			type = a.GetType(typeName);
 			if (type != null)

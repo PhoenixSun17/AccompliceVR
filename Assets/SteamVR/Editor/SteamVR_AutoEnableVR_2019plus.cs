@@ -243,11 +243,13 @@ namespace Valve.VR
 
             if (EditorPrefs.HasKey(enabledLoaderKey) == false)
             {
+#if !UNITY_6000_0_OR_NEWER
                 if (UnityEditor.PlayerSettings.virtualRealitySupported == true)
                 {
                     UnityEditor.PlayerSettings.virtualRealitySupported = false;
                     Debug.Log("<b>[SteamVR Setup]</b> Disabled virtual reality support in Player Settings. <b>Because you're using XR Manager. Make sure OpenVR Loader is enabled in XR Manager UI.</b> (you can disable this by unchecking Assets/SteamVR/SteamVR_Settings.autoEnableVR)");
                 }
+#endif
 
                 var generalSettings = XRGeneralSettingsPerBuildTarget.XRGeneralSettingsForBuildTarget(BuildTargetGroup.Standalone);
                 if (generalSettings == null)
@@ -302,7 +304,11 @@ namespace Valve.VR
 
         private static void StartXRInstaller() 
         {
+#if UNITY_6000_6_OR_NEWER
+            Assembly[] assemblies = UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies().ToArray();
+#else
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+#endif
             for (int assemblyIndex = 0; assemblyIndex < assemblies.Length; assemblyIndex++)
             {
                 Assembly assembly = assemblies[assemblyIndex];
